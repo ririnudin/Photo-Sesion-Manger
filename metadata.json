@@ -1,0 +1,6 @@
+{
+  "name": "Photo Session Manager",
+  "description": "Aplikasi pengelola sesi foto event dengan pembuatan folder Google Drive otomatis dan upload foto background.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
