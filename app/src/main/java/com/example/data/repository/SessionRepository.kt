@@ -117,6 +117,7 @@ class SessionRepository(
             val uploadResult = driveRepository.uploadPhoto(
                 file = processedFile,
                 folderId = session.driveFolderId,
+                settings = settings,
                 onProgress = { /* progress callback handled in status */ }
             )
 

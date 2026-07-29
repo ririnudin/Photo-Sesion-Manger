@@ -42,4 +42,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun setMainFolderName(folderName: String) {
         updateSettings(settingsState.value.copy(mainFolderName = folderName))
     }
+
+    fun setGoogleAccountName(name: String) {
+        updateSettings(settingsState.value.copy(googleAccountName = name))
+    }
+
+    fun setGoogleAccountEmail(email: String) {
+        updateSettings(settingsState.value.copy(googleAccountEmail = email))
+    }
 }

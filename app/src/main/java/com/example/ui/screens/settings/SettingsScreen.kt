@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.HighQuality
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -34,16 +36,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,6 +70,64 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val settings by viewModel.settingsState.collectAsStateWithLifecycle()
+
+    var showAccountDialog by remember { mutableStateOf(false) }
+    var tempAccountName by remember { mutableStateOf("") }
+    var tempAccountEmail by remember { mutableStateOf("") }
+
+    if (showAccountDialog) {
+        AlertDialog(
+            onDismissRequest = { showAccountDialog = false },
+            title = { Text("Hubungkan Akun Google", fontWeight = FontWeight.Bold) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        text = "Masukkan Nama dan Email Akun Google Anda untuk dihubungkan dengan Google Drive studio.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    OutlinedTextField(
+                        value = tempAccountName,
+                        onValueChange = { tempAccountName = it },
+                        label = { Text("Nama Pemilik / Studio") },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    OutlinedTextField(
+                        value = tempAccountEmail,
+                        onValueChange = { tempAccountEmail = it },
+                        label = { Text("Email Akun Google") },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (tempAccountEmail.isNotBlank()) {
+                            viewModel.setGoogleAccountName(if (tempAccountName.isNotBlank()) tempAccountName else "Studio Foto")
+                            viewModel.setGoogleAccountEmail(tempAccountEmail)
+                            Toast.makeText(context, "Akun Google berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+                            showAccountDialog = false
+                        } else {
+                            Toast.makeText(context, "Email tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Simpan & Hubungkan")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAccountDialog = false }) {
+                    Text("Batal")
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -145,6 +210,26 @@ fun SettingsScreen(
                                     color = StatusSuccess
                                 )
                             }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        OutlinedButton(
+                            onClick = {
+                                tempAccountName = settings.googleAccountName
+                                tempAccountEmail = settings.googleAccountEmail
+                                showAccountDialog = true
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AccountCircle,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Ganti / Hubungkan Akun Google Real")
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))

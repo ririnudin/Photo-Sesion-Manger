@@ -3,6 +3,7 @@ package com.example.data.model
 data class AppSettings(
     val googleAccountName: String = "Fotografer Event Pro",
     val googleAccountEmail: String = "photographer@gmail.com",
+    val googleOAuthToken: String = "",
     val isSignedIn: Boolean = true,
     val mainFolderName: String = "Photo Session Manager",
     val autoUploadEnabled: Boolean = true,
